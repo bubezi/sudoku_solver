@@ -1,20 +1,3 @@
-import time
-from functools import wraps
-
-
-def time_this(func):
-    '''
-    Decorator that reports the execution time.
-    '''
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(f"Solved in {end-start} seconds\n")
-        return result
-    return wrapper
-    
 x = 'y'
 puzzle = [
     [5,3,x, x,7,x, x,x,x],
@@ -43,6 +26,22 @@ puzzle = [
 #     [3,4,5, 2,8,6, 1,7,9],
 # ]
 
+
+import time
+from functools import wraps
+
+def time_this(func):
+    '''
+    Decorator that reports the execution time.
+    '''
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"Solved in {end-start} seconds\n")
+        return result
+    return wrapper
 
 def convert_blank_to_x(puzzle):
     '''
@@ -263,6 +262,7 @@ def solved(puzzle):
 def solve(puzzle):
     sol = puzzle
     possible_values = get_possible_values(sol)
+    prettier_print(sol)
     n = 0
     while not solved(sol):
         n += 1
@@ -273,6 +273,7 @@ def solve(puzzle):
                     if len(possible_values[row][col])==1:
                         num = possible_values[row][col][0]
                         sol[row][col] = num
+                        print(f"Solved row {row+1} and column {col+1}")
         prettier_print(sol)
         possible_values = get_possible_values(sol)
     print(f"Solved in {n} steps!!!\n")
