@@ -190,6 +190,46 @@ def check_col_for_match(num, col, puzzle):
             return True
     return False
 
+def which_square(row, col):
+    square = 0
+    this_one = False
+    for start_x in [0, 3, 6]:
+        for start_y in [0, 3, 6]:
+            for i in range(3):
+                for j in range(3):
+                    if start_x+i == row and start_y+j == col:
+                        this_one = True  
+            if this_one:
+                return square
+            square += 1
+
+
+def prettier_print(puzzle):
+    puzzle = convert_blank_to_x(puzzle)
+    for index_r, row in enumerate(puzzle):
+        index_r += 1
+        for index_c, col in enumerate(row):
+            index_c += 1
+            print(col, end=", ")
+            if index_c%3==0:
+                print(" ", end="")
+        print("")
+        if index_r%3==0:
+            print("")
+
+
+def get_possible_values(puzzle):
+    possible_values = [[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],]
+    for row in range(9):
+        for col in range(9):
+            if type(puzzle[row][col]) != int:
+                for num in range(9):
+                    num += 1
+                    if not check_row_for_match(num, row, puzzle):
+                        if not check_col_for_match(num, col, puzzle):
+                            if not check_square_for_match(num, which_square(row, col), puzzle):
+                                possible_values[row][col].append(num)
+    return possible_values
 
 def solved(puzzle):
     """
@@ -202,7 +242,7 @@ def solved(puzzle):
             return False
         if c[i]!=45:
             return False
-        if sum_of_square(i)!=45:
+        if sum_of_square(i, puzzle)!=45:
             return False
     return True
 
@@ -210,18 +250,29 @@ def solved(puzzle):
 @time_this
 def solve(puzzle):
     sol = puzzle
+    # prev_sol = sol
+    possible_values = get_possible_values(sol)
     while not solved(sol):
         print("Solving...")
         for row in range(9):
             for col in range(9):
                 if type(sol[row][col]) != int:
-                    for num in range(9):
-                        if not check_row_for_match(num, row, sol):
-                            pass
-        # break
-    print("Solved!!!")
+                    if len(possible_values[row][col])==1:
+                        num = possible_values[row][col][0]
+                        sol[row][col] = num
+        
+        possible_values = get_possible_values(sol)
+        prettier_print(sol)
+        # if prev_sol==sol:
+        #     print('Not solved :( I am stuck. Sorry!')
+        #     # break
+        # prev_sol = sol
+    if solved(sol):
+        print("Solved!!!")
+        prettier_print(sol)
     return sol
 
 
-# solution = solve(puzzle)
+solution = solve(puzzle)
+# print(which_square(5, 5))
 # print(check_col_for_match(5, 4, puzzle))
