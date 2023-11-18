@@ -11,7 +11,7 @@ def time_this(func):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        print(func.__name__, "ETC:", end-start)
+        print(f"Solved in {end-start} seconds\n")
         return result
     return wrapper
     
@@ -219,7 +219,19 @@ def prettier_print(puzzle):
 
 
 def get_possible_values(puzzle):
-    possible_values = [[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],[[], [], [], [], [], [], [], [], [],],]
+    possible_values = [
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+        [[], [], [],  [], [], [],  [], [], [],],
+        ]
     for row in range(9):
         for col in range(9):
             if type(puzzle[row][col]) != int:
@@ -250,29 +262,22 @@ def solved(puzzle):
 @time_this
 def solve(puzzle):
     sol = puzzle
-    # prev_sol = sol
     possible_values = get_possible_values(sol)
+    n = 0
     while not solved(sol):
-        print("Solving...")
+        n += 1
+        print("Step", n, "Solving...")
         for row in range(9):
             for col in range(9):
                 if type(sol[row][col]) != int:
                     if len(possible_values[row][col])==1:
                         num = possible_values[row][col][0]
                         sol[row][col] = num
-        
+        prettier_print(sol)
         possible_values = get_possible_values(sol)
-        prettier_print(sol)
-        # if prev_sol==sol:
-        #     print('Not solved :( I am stuck. Sorry!')
-        #     # break
-        # prev_sol = sol
-    if solved(sol):
-        print("Solved!!!")
-        prettier_print(sol)
+    print(f"Solved in {n} steps!!!\n")
+    prettier_print(sol)
     return sol
 
 
 solution = solve(puzzle)
-# print(which_square(5, 5))
-# print(check_col_for_match(5, 4, puzzle))
